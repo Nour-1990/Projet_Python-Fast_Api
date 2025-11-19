@@ -237,7 +237,6 @@ def test_create_and_get_client():
 
     client_id = created["codcli"]
 
-    # Correction E501: Couper la chaîne de l'URL
     response_get = client.get(
         f"/api/v1/client/{client_id}"
     )
