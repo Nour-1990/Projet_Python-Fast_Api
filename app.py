@@ -236,9 +236,8 @@ def test_create_and_get_client():
     client_id = created["codcli"]
 
     response_get = client.get(
-    f"/api/v1/client/{client_id}"
-)
-
+        f"/api/v1/client/{client_id}"
+    )
     assert response_get.status_code == 200
 
     fetched = response_get.json()
