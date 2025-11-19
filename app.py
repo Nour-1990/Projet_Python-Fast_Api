@@ -11,9 +11,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base, Session
 # Configuration DB
 # --------------------------
 DB_USER = os.getenv("DB_USER", "admin")
-# Correction E501: Raccourcir la ligne 
-DEFAULT_DB_PASSWORD = "Admin123!"
-DB_PASSWORD = os.getenv("DB_PASSWORD", DEFAULT_DB_PASSWORD)
+DB_PASSWORD = os.getenv("DB_PASSWORD", "Admin123!")
 DB_HOST = os.getenv("DB_HOST", "localhost")
 DB_PORT = os.getenv("DB_PORT", "3306")
 DB_NAME = os.getenv("DB_NAME", "digicheese")
@@ -21,9 +19,7 @@ DB_NAME = os.getenv("DB_NAME", "digicheese")
 # SQLite pour simplification
 CONNECTION_STRING = "sqlite:///./test.db"
 
-engine = create_engine(
-    CONNECTION_STRING, connect_args={"check_same_thread": False}
-)
+engine = create_engine(CONNECTION_STRING, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # --------------------------
@@ -178,8 +174,7 @@ def create_client(client: ClientPost, db: Session = Depends(get_db)):
 
 
 @router.patch("/{client_id}", response_model=ClientInDB)
-def patch_client(client_id: int, client: ClientPatch, 
-                 db: Session = Depends(get_db)):
+def patch_client(client_id: int, client: ClientPatch, db: Session = Depends(get_db)):
     db_client = service.get_client_by_id(db, client_id)
     if not db_client:
         raise HTTPException(status_code=404, detail="Client non trouvé")
@@ -340,4 +335,3 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
-# Ligne vide W292 ajoutée ici
