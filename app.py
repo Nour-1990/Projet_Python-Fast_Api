@@ -17,7 +17,7 @@ DB_PORT = os.getenv("DB_PORT", "3306")
 DB_NAME = os.getenv("DB_NAME", "digicheese")
 
 # SQLite pour simplification
-CONNECTION_STRING = "sqlite:///./test.db"
+CONNECTION_STRING ="sqlite:///./test.db"
 
 engine = create_engine(CONNECTION_STRING, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
