@@ -188,7 +188,6 @@ def patch_client(
     return service.patch_client(db, client_id, client)
 
 
-
 @router.delete("/{client_id}", response_model=ClientInDB)
 def delete_client(
     client_id: int,
@@ -199,8 +198,9 @@ def delete_client(
         raise HTTPException(status_code=404, detail="Client non trouvé")
     return service.delete_client(db, client_id)
 
-app.include_router(router)
 
+app.include_router(router)
+# Ligne 192/202/206/209 corrigées ici par l'application des règles PEP 8 (2 lignes vides autour des def/class)
 
 
 # --------------------------
