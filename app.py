@@ -17,7 +17,10 @@ DB_PORT = os.getenv("DB_PORT", "3306")
 DB_NAME = os.getenv("DB_NAME", "digicheese")
 
 # SQLite pour simplification
-CONNECTION_STRING = "sqlite:///./test.db"
+CONNECTION_STRING = (
+    "sqlite:///./test.db"
+)
+
 
 engine = create_engine(CONNECTION_STRING, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -233,8 +236,9 @@ def test_create_and_get_client():
     client_id = created["codcli"]
 
     response_get = client.get(
-        f"/api/v1/client/{client_id}"
-    )
+    f"/api/v1/client/{client_id}"
+)
+
     assert response_get.status_code == 200
 
     fetched = response_get.json()
