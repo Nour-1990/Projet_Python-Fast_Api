@@ -200,7 +200,7 @@ def delete_client(
 
 
 app.include_router(router)
-# Ligne 192/202/206/209 corrigées ici par l'application des règles PEP 8 (2 lignes vides autour des def/class)
+
 
 
 # --------------------------
