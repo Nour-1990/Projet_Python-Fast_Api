@@ -22,7 +22,9 @@ CONNECTION_STRING = (
 )
 
 
-engine = create_engine(CONNECTION_STRING, connect_args={"check_same_thread": False})
+engine = create_engine(
+    CONNECTION_STRING, 
+    connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # --------------------------
