@@ -17,9 +17,7 @@ DB_PORT = os.getenv("DB_PORT", "3306")
 DB_NAME = os.getenv("DB_NAME", "digicheese")
 
 # SQLite pour simplification
-CONNECTION_STRING = (
-    "sqlite:///./test.db"
-)
+CONNECTION_STRING = "sqlite:///./test.db"
 
 engine = create_engine(
     CONNECTION_STRING,
@@ -49,6 +47,7 @@ class Client(Base):
 
 # Créer les tables
 Base.metadata.create_all(bind=engine)
+
 
 # --------------------------
 # Schemas
@@ -195,6 +194,7 @@ def delete_client(client_id: int, db: Session = Depends(get_db)):
 
 app.include_router(router)
 
+
 # --------------------------
 # Root
 # --------------------------
@@ -219,17 +219,12 @@ def test_create_and_get_client():
     from fastapi.testclient import TestClient
 
     client = TestClient(app)
-
     client_data = {
         "nom": "Dupont",
         "prenom": "Jean",
         "adresse": "123 Rue Exemple",
     }
-
-    response = client.post(
-        "/api/v1/client/",
-        json=client_data
-    )
+    response = client.post("/api/v1/client/", json=client_data)
     assert response.status_code == 200
 
     created = response.json()
@@ -242,7 +237,6 @@ def test_create_and_get_client():
         f"/api/v1/client/{client_id}"
     )
     assert response_get.status_code == 200
-
     fetched = response_get.json()
     assert fetched["nom"] == "Dupont"
     assert fetched["prenom"] == "Jean"
@@ -252,17 +246,12 @@ def test_patch_client():
     from fastapi.testclient import TestClient
 
     client = TestClient(app)
-
     client_data = {
         "nom": "Martin",
         "prenom": "Paul",
         "adresse": "456 Rue Exemple",
     }
-
-    response = client.post(
-        "/api/v1/client/",
-        json=client_data
-    )
+    response = client.post("/api/v1/client/", json=client_data)
     created = response.json()
     client_id = created["codcli"]
 
@@ -280,7 +269,6 @@ def test_get_nonexistent_client():
 
     client = TestClient(app)
     response = client.get("/api/v1/client/99999")
-
     assert response.status_code == 404
     assert response.json() == {"detail": "Client non trouvé"}
 
@@ -290,19 +278,9 @@ def test_delete_client_with_edge_and_error_cases():
     from unittest.mock import patch
 
     client = TestClient(app)
-
-    data = {
-        "nom": "Test",
-        "prenom": "User",
-        "adresse": "1 Rue Exemple",
-    }
-
-    create_resp = client.post(
-        "/api/v1/client/",
-        json=data
-    )
+    data = {"nom": "Test", "prenom": "User", "adresse": "1 Rue Exemple"}
+    create_resp = client.post("/api/v1/client/", json=data)
     assert create_resp.status_code == 200
-
     created_id = create_resp.json()["codcli"]
 
     delete_resp = client.delete(
@@ -311,9 +289,7 @@ def test_delete_client_with_edge_and_error_cases():
     assert delete_resp.status_code == 200
     assert delete_resp.json()["codcli"] == created_id
 
-    get_resp_after_delete = client.get(
-        f"/api/v1/client/{created_id}"
-    )
+    get_resp_after_delete = client.get(f"/api/v1/client/{created_id}")
     assert get_resp_after_delete.status_code == 404
 
     resp = client.delete("/api/v1/client/999999")
@@ -326,16 +302,8 @@ def test_delete_client_with_edge_and_error_cases():
     resp = client.delete("/api/v1/client/abc")
     assert resp.status_code == 422
 
-    data2 = {
-        "nom": "Crash",
-        "prenom": "Test",
-        "adresse": "2 Rue Exemple",
-    }
-
-    create_resp2 = client.post(
-        "/api/v1/client/",
-        json=data2
-    )
+    data2 = {"nom": "Crash", "prenom": "Test", "adresse": "2 Rue Exemple"}
+    create_resp2 = client.post("/api/v1/client/", json=data2)
     new_id = create_resp2.json()["codcli"]
 
     with patch(
@@ -351,7 +319,6 @@ def test_delete_client_with_edge_and_error_cases():
 # --------------------------
 if __name__ == "__main__":
     import uvicorn
-
     uvicorn.run(
         app,
         host="0.0.0.0",
