@@ -105,7 +105,7 @@ class ClientRepository:
         db.refresh(client)
         return client
 
-    def patch_client(self, db: Session, client_id: int, data: dict):
+    def patch_client(self, db: Session, client_id: int,  dict):
         client = db.query(Client).get(client_id)
         for k, v in data.items():
             setattr(client, k, v)
@@ -343,7 +343,8 @@ def test_delete_client_with_edge_and_error_cases():
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(  # Fixed line length and comment spacing
+    # Fixed line length
+    uvicorn.run(
         app,
         host="0.0.0.0",
         port=8000,
