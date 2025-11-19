@@ -10,6 +10,6 @@ jobs:
         with:
           python-version: '3.13'
       - name: Run linters
-        run: flake8 app/
+        run: flake8 app.py --format=json > resultat_flake8.json
       - name: Run tests
-        run: pytest --maxfail=1 --disable-warnings -q
+        run: pytest app.py --cov=app --cov-report=term-missing --cov-report=json:coverage.json
