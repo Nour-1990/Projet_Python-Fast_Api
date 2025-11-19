@@ -97,7 +97,8 @@ class ClientRepository:
     def get_client_by_id(self, db: Session, client_id: int):
         return db.query(Client).get(client_id)
 
-    def create_client(self, db: Session,  dict):
+    # Fixed function signature: added 'data' parameter
+    def create_client(self, db: Session, data: dict):
         client = Client(**data)
         db.add(client)
         db.commit()
@@ -333,7 +334,7 @@ def test_delete_client_with_edge_and_error_cases():
         # unhandled exceptions (500) or if the exception is caught internally (200).
         # The specific behavior depends on the main app's error handling.
         resp = client.delete(f"/api/v1/client/{new_id}")
-        assert resp.status_code in (500, 200) # Adjusted for flake8 E261
+        assert resp.status_code in (500, 200)  # Adjusted for flake8 E261
 
 
 # --------------------------
@@ -342,7 +343,7 @@ def test_delete_client_with_edge_and_error_cases():
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(
+    uvicorn.run(  # Fixed line length and comment spacing
         app,
         host="0.0.0.0",
         port=8000,
