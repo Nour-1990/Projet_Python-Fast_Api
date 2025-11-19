@@ -178,11 +178,15 @@ def create_client(client: ClientPost, db: Session = Depends(get_db)):
 
 @router.patch("/{client_id}", response_model=ClientInDB)
 def patch_client(
-client_id: int, client: ClientPatch,db: Session = Depends(get_db)):
+    client_id: int,
+    client: ClientPatch,
+    db: Session = Depends(get_db)
+):
     db_client = service.get_client_by_id(db, client_id)
     if not db_client:
         raise HTTPException(status_code=404, detail="Client non trouvé")
     return service.patch_client(db, client_id, client)
+
 
 
 @router.delete("/{client_id}", response_model=ClientInDB)
