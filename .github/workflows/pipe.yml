@@ -7,7 +7,7 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:  # déclenchement manuel
+  workflow_dispatch:
 
 jobs:
   build:
@@ -29,7 +29,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install k6
+          pip install k6 radon pylint flake8
 
       - name: Run linters (Flake8)
         run: flake8 app.py --max-line-length=79
@@ -57,7 +57,7 @@ jobs:
           k6 run load_test.js --out json=load_test_results.json || true
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: quality-reports
           path: |
