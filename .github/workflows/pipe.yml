@@ -43,7 +43,7 @@ jobs:
           radon mi app.py > radon_mi.txt
 
       - name: Run unit tests
-        run: pytest --maxfail=1 --disable-warnings -q --junitxml=pytest_results.xml
+        run: pytest app.py --maxfail=1 --disable-warnings -q
 
       - name: Run k6 load test
         run: |
