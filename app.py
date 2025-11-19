@@ -21,10 +21,10 @@ CONNECTION_STRING = (
     "sqlite:///./test.db"
 )
 
-
 engine = create_engine(
     CONNECTION_STRING,
-    connect_args={"check_same_thread": False})
+    connect_args={"check_same_thread": False}
+)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # --------------------------
@@ -49,7 +49,6 @@ class Client(Base):
 
 # Créer les tables
 Base.metadata.create_all(bind=engine)
-
 
 # --------------------------
 # Schemas
@@ -97,16 +96,14 @@ class ClientRepository:
     def get_client_by_id(self, db: Session, client_id: int):
         return db.query(Client).get(client_id)
 
-    # Fixed function signature: added 'data' parameter
-    def create_client(self, db: Session,  dict):
+    def create_client(self, db: Session, data: dict):
         client = Client(**data)
         db.add(client)
         db.commit()
         db.refresh(client)
         return client
 
-    # Fixed function signature: added 'data' parameter
-    def patch_client(self, db: Session, client_id: int,  dict):
+    def patch_client(self, db: Session, client_id: int, data: dict):
         client = db.query(Client).get(client_id)
         for k, v in data.items():
             setattr(client, k, v)
@@ -198,7 +195,6 @@ def delete_client(client_id: int, db: Session = Depends(get_db)):
 
 app.include_router(router)
 
-
 # --------------------------
 # Root
 # --------------------------
@@ -230,7 +226,10 @@ def test_create_and_get_client():
         "adresse": "123 Rue Exemple",
     }
 
-    response = client.post("/api/v1/client/", json=client_data)
+    response = client.post(
+        "/api/v1/client/",
+        json=client_data
+    )
     assert response.status_code == 200
 
     created = response.json()
@@ -260,13 +259,17 @@ def test_patch_client():
         "adresse": "456 Rue Exemple",
     }
 
-    response = client.post("/api/v1/client/", json=client_data)
+    response = client.post(
+        "/api/v1/client/",
+        json=client_data
+    )
     created = response.json()
     client_id = created["codcli"]
 
     patch_data = {"prenom": "Pierre"}
     response_patch = client.patch(
-        f"/api/v1/client/{client_id}", json=patch_data
+        f"/api/v1/client/{client_id}",
+        json=patch_data
     )
     assert response_patch.status_code == 200
     assert response_patch.json()["prenom"] == "Pierre"
@@ -294,7 +297,10 @@ def test_delete_client_with_edge_and_error_cases():
         "adresse": "1 Rue Exemple",
     }
 
-    create_resp = client.post("/api/v1/client/", json=data)
+    create_resp = client.post(
+        "/api/v1/client/",
+        json=data
+    )
     assert create_resp.status_code == 200
 
     created_id = create_resp.json()["codcli"]
@@ -305,7 +311,9 @@ def test_delete_client_with_edge_and_error_cases():
     assert delete_resp.status_code == 200
     assert delete_resp.json()["codcli"] == created_id
 
-    get_resp_after_delete = client.get(f"/api/v1/client/{created_id}")
+    get_resp_after_delete = client.get(
+        f"/api/v1/client/{created_id}"
+    )
     assert get_resp_after_delete.status_code == 404
 
     resp = client.delete("/api/v1/client/999999")
@@ -324,18 +332,18 @@ def test_delete_client_with_edge_and_error_cases():
         "adresse": "2 Rue Exemple",
     }
 
-    create_resp2 = client.post("/api/v1/client/", json=data2)
+    create_resp2 = client.post(
+        "/api/v1/client/",
+        json=data2
+    )
     new_id = create_resp2.json()["codcli"]
 
     with patch(
         "app.ClientRepository.delete_client",
         side_effect=Exception("Erreur interne"),
     ):
-        # The assertion below checks for status codes that might result from
-        # unhandled exceptions (500) or if the exception is caught internally (200).
-        # The specific behavior depends on the main app's error handling.
         resp = client.delete(f"/api/v1/client/{new_id}")
-        assert resp.status_code in (500, 200)  # Adjusted for flake8 E261
+        assert resp.status_code in (500, 200)
 
 
 # --------------------------
@@ -344,7 +352,6 @@ def test_delete_client_with_edge_and_error_cases():
 if __name__ == "__main__":
     import uvicorn
 
-    # Fixed line length
     uvicorn.run(
         app,
         host="0.0.0.0",
