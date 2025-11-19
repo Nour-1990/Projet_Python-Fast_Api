@@ -201,8 +201,6 @@ def delete_client(
 
 app.include_router(router)
 
-
-
 # --------------------------
 # Root
 # --------------------------
