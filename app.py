@@ -45,6 +45,7 @@ class Client(Base):
 # Créer les tables
 Base.metadata.create_all(bind=engine)
 
+
 # --------------------------
 # Schemas
 # --------------------------
@@ -189,6 +190,7 @@ def delete_client(client_id: int, db: Session = Depends(get_db)):
 
 
 app.include_router(router)
+
 
 # --------------------------
 # Root
