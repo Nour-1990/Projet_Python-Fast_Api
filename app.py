@@ -15,8 +15,9 @@ DB_PASSWORD = os.getenv("DB_PASSWORD", "Admin123!")
 DB_HOST = os.getenv("DB_HOST", "localhost")
 DB_PORT = os.getenv("DB_PORT", "3306")
 DB_NAME = os.getenv("DB_NAME", "digicheese")
+
 # SQLite pour simplification
-CONNECTION_STRING = "sqlite:///./test.db"  
+CONNECTION_STRING = "sqlite:///./test.db"
 
 engine = create_engine(CONNECTION_STRING, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -25,7 +26,6 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # Models
 # --------------------------
 Base = declarative_base()
-
 
 
 class Client(Base):
@@ -198,7 +198,6 @@ def root():
     return {"message": "FastAPI operational"}
 
 
-
 # --------------------------
 # Tests intégrés pour pytest
 # --------------------------
@@ -233,7 +232,7 @@ def test_create_and_get_client():
 
     response_get = client.get(
         f"/api/v1/client/{client_id}"
-        )
+    )
     assert response_get.status_code == 200
 
     fetched = response_get.json()
@@ -257,8 +256,9 @@ def test_patch_client():
     client_id = created["codcli"]
 
     patch_data = {"prenom": "Pierre"}
-    response_patch = client.patch(f"/api/v1/client/{client_id}", json=patch_data)
-
+    response_patch = client.patch(
+        f"/api/v1/client/{client_id}", json=patch_data
+    )
     assert response_patch.status_code == 200
     assert response_patch.json()["prenom"] == "Pierre"
 
@@ -292,7 +292,7 @@ def test_delete_client_with_edge_and_error_cases():
 
     delete_resp = client.delete(
         f"/api/v1/client/{created_id}"
-        )
+    )
     assert delete_resp.status_code == 200
     assert delete_resp.json()["codcli"] == created_id
 
@@ -320,7 +320,7 @@ def test_delete_client_with_edge_and_error_cases():
 
     with patch(
         "app.ClientRepository.delete_client",
-         side_effect=Exception("Erreur interne"),
+        side_effect=Exception("Erreur interne"),
     ):
         resp = client.delete(f"/api/v1/client/{new_id}")
         assert resp.status_code in (500, 200)
