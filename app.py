@@ -38,7 +38,7 @@ class Client(Base):
 Base.metadata.create_all(bind=engine)
 
 # --------------------------
-# Schemas
+# Schemas 
 # --------------------------
 from pydantic import BaseModel
 from typing import Optional, List
