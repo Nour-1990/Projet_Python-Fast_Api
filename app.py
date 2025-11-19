@@ -204,8 +204,8 @@ app.include_router(router)
 # --------------------------
 # Root
 # --------------------------
-@app.get("/")
 
+@app.get("/")
 def root():
     return {"message": "FastAPI operational"}
 
