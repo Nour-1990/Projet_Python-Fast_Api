@@ -321,7 +321,7 @@ def test_delete_client_with_edge_and_error_cases():
 
 
 # --------------------------
-# Run app
+# Run application
 # --------------------------
 if __name__ == "__main__":
     import uvicorn
