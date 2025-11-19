@@ -314,11 +314,11 @@ def test_delete_client_with_edge_and_error_cases():
     create_resp2 = client.post("/api/v1/client/", json=data2)
     new_id = create_resp2.json()["codcli"]
 
-    with patch("app.ClientRepository.delete_client", side_effect=Exception("Erreur interne")):
+    with patch(
+        "app.ClientRepository.delete_client", 
+        side_effect=Exception("Erreur interne")):
         resp = client.delete(f"/api/v1/client/{new_id}")
         assert resp.status_code == 500
-
-
 
 # --------------------------
 # Run application
