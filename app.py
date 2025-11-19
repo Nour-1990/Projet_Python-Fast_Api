@@ -98,13 +98,14 @@ class ClientRepository:
         return db.query(Client).get(client_id)
 
     # Fixed function signature: added 'data' parameter
-    def create_client(self, db: Session, data: dict):
+    def create_client(self, db: Session,  dict):
         client = Client(**data)
         db.add(client)
         db.commit()
         db.refresh(client)
         return client
 
+    # Fixed function signature: added 'data' parameter
     def patch_client(self, db: Session, client_id: int,  dict):
         client = db.query(Client).get(client_id)
         for k, v in data.items():
