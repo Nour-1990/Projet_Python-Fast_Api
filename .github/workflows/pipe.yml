@@ -1,9 +1,21 @@
 name: QualityPipeline
-on: [push]
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:  # déclenchement manuel
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.13]
 
     steps:
       - uses: actions/checkout@v3
@@ -11,15 +23,46 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.13'
+          python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install k6
 
-      - name: Run linters
-        run: flake8 app.py
+      - name: Run linters (Flake8)
+        run: flake8 app.py --max-line-length=79
 
-      - name: Run tests
-        run: pytest app.py
+      - name: Run pylint
+        run: pylint app.py --output-format=text > pylint_report.txt || true
+
+      - name: Run Radon analysis
+        run: |
+          radon cc app.py -s -a > radon_cc.txt
+          radon mi app.py > radon_mi.txt
+
+      - name: Run unit tests
+        run: pytest --maxfail=1 --disable-warnings -q --junitxml=pytest_results.xml
+
+      - name: Run k6 load test
+        run: |
+          echo '
+          import http from "k6/http";
+          import { sleep } from "k6";
+          export default function () {
+              http.get("http://localhost:8000/");
+              sleep(1);
+          }' > load_test.js
+          k6 run load_test.js --out json=load_test_results.json || true
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: quality-reports
+          path: |
+            pylint_report.txt
+            radon_cc.txt
+            radon_mi.txt
+            pytest_results.xml
+            load_test_results.json
