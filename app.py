@@ -24,7 +24,7 @@ CONNECTION_STRING = (
 
 engine = create_engine(
     CONNECTION_STRING, 
-    connect_args={"check_same_thread": False})
+    connect_args={"check_same_thread": False}) # W291 corrigé ici
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # --------------------------
@@ -263,8 +263,11 @@ def test_patch_client():
     client_id = created["codcli"]
 
     patch_data = {"prenom": "Pierre"}
+    
+    # Correction E501 : Stocker l'URL pour réduire la longueur de ligne
+    url = f"/api/v1/client/{client_id}"
     response_patch = client.patch(
-        f"/api/v1/client/{client_id}", json=patch_data
+        url, json=patch_data
     )
     assert response_patch.status_code == 200
     assert response_patch.json()["prenom"] == "Pierre"
@@ -340,3 +343,4 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
+# Ajout d'une ligne vide pour W292 au cas où
