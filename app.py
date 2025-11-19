@@ -97,7 +97,7 @@ class ClientRepository:
     def get_client_by_id(self, db: Session, client_id: int):
         return db.query(Client).get(client_id)
 
-    def create_client(self, db: Session, data: dict):
+    def create_client(self, db: Session,  dict):
         client = Client(**data)
         db.add(client)
         db.commit()
@@ -329,11 +329,11 @@ def test_delete_client_with_edge_and_error_cases():
         "app.ClientRepository.delete_client",
         side_effect=Exception("Erreur interne"),
     ):
+        # The assertion below checks for status codes that might result from
+        # unhandled exceptions (500) or if the exception is caught internally (200).
+        # The specific behavior depends on the main app's error handling.
         resp = client.delete(f"/api/v1/client/{new_id}")
-        # Note: This assertion might depend on how exceptions are handled in the main app.
-        # If not handled globally, it could return 500. If handled, might return 200.
-        # The original test allowed both, which is unusual but possible.
-        assert resp.status_code in (500, 200) # Adjusted line length here too
+        assert resp.status_code in (500, 200) # Adjusted for flake8 E261
 
 
 # --------------------------
@@ -342,4 +342,9 @@ def test_delete_client_with_edge_and_error_cases():
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run(
+        app,
+        host="0.0.0.0",
+        port=8000,
+        reload=True
+    )
